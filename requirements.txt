@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pillow
+pytesseract
+pdf2image
+requests
+firebase-admin
+sentence-transformers
+faiss-cpu
+python-dotenv
