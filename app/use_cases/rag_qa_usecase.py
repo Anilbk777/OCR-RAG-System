@@ -5,7 +5,7 @@ import json
 import requests
 # Try to import google.generativeai, fallback to requests if not available
 try:
-    import google.generativeai as genai
+    import langchain_google_genai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
