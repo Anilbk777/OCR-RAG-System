@@ -1,0 +1,17 @@
+i) Test Progress Monitoring,
+
+The purpose of test monitoring is to provide feedback and visibility about test activities. Information
+to be monitored may be collected manually or automatically and may be used to measure exit
+criteria, such as coverage. Metrics may also be used to assess progress against the planned
+schedule and budget. Common test metrics include:
+o Percentage of work done in test case preparation (or percentage of planned test cases
+prepared)
+Percentage of work done in test environment preparation
+Test case execution (e.g., number of test cases run/not run, and test cases passed/failed)
+Defect information (e.g., defect density, defects found and fixed, failure rate, and re-test results)
+Test coverage of requirements, risks or code
+Subjective confidence of testers in the product
+Dates of test milestones
+Testing costs, including the cost compared to the benefit of finding the next defect or to run the
+next test
+

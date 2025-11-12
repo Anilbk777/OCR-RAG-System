@@ -1,0 +1,37 @@
+DS--23 Fall.pdf X  7ThSemPastPapers - 7ThSemPastPa| X  Ch-2-Distributed-System.pdf %  9780132773577.pdf - George-CoulcX = +
+
+a
+o i] © D file///c:jUsers/Dell/Desktop/7th sem/7ThSemPastPapers.pdt w Ga =
+wo
+
+Differentiate between centralized and distributed system. List out the 8
+main characteristics of distributed system and explain different
+transparencies.
+
+For what purpose we need PC and. RPC (Remote Procedure Call)in 7
+
+distributed system? How each of them are relate or unrelated? Explain
+
+your understanding.’
+
+What are the major roles of middleware system? Explain the 7
+
+architecture of remote method invocation.
+
+b) What is distributed’ file system? Explain SUN-NFS with its 8
+architecture. -
+
+3. a) How logical clock is: different from physical clock? Explain Berkeley 8
+physical clock synchronization algorithm with an appropnate
+example.
+
+b) What is distributed mutual exclusion? ‘How mutual exclusion is 7
+achieve using token based Ricart Agrawala algorithm.
+
+= © Type here to search =H Ls) nh BP e @ Za 27°C Partly cloudy A & Elm @ ) 8:47 PM
+
+8/18/2025 Oo
+
+b)
+
+2. a)

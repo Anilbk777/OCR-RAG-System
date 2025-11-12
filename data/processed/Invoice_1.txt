@@ -1,0 +1,40 @@
+INVOICE
+
+Invoice No: # 123 45698
+Date = 01 / 10 /2020 BRAND NAME
+Due Date: 25 /05 /2021 TAGIE EINE ERE
+‘Account No: # 242548 85
+
+PAYMENT INFO
+
+(4) BILLTO: Account: #123 456 785,
+COMPANY NAME
+. 24 Lorem Street Area, ‘Alc Name: Lorem Ipsum
+Location: Lorem Ipsum 75484 Bank Details : Add your Bank
+No ICT DESCRIPTION | UNIT PRICE ary TOTAL
+
+01 | Flyer Design $10.00 1 $10.00
+02 | Brochure Design $5.00 Bs $10.00
+03 | Business Card $15.00 3 $45.00
+04_| Lorem Ipsum Design $25.00 4 $100.00
+05 | Lorem Ipsum Design $10.00 5 $50.00
+‘Sub Total $535.00
+Tax 5% $0.00
+TERMS & CONDITION Grand Total $535.00
+
+Lorem ipsum dolor sit amet; consectetuer
+adipiscing elit, sed diam nonummy nibh
+
+euismod tincidunt.
+
+Signature
+4128 45678955
+
+‘youremail.com
+
+www yourdomain.com
+
+2000
+
+3128; Laren wei Bitonees Aide THANK YOU FOR YOUR BUSINESS
+
