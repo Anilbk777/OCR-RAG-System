@@ -1,61 +1,88 @@
-# # from app.infrastructure.ocr.tesseract_service import process_images
+
 # from langchain_google_genai import ChatGoogleGenerativeAI
-# import base64
-# from langchain.messages import HumanMessage
+# from langchain.messages import HumanMessage,SystemMessage
+# from pathlib import Path
+# import json
 # from dotenv import load_dotenv
 # import os
-# from pathlib import Path
-# from langchain.output_parsers import JsonOutputParser
+# from langchain_core.prompts import ChatPromptTemplate
+# import re
 
-#     # Load environment variables from .env file
+
+# # Load environment variables
 # load_dotenv()
-
-#     # Access the variables
 # api_key = os.getenv("API_KEY")
 
+# # Initialize Gemini Chat model
 # llm = ChatGoogleGenerativeAI(
 #     model="gemini-2.5-flash",
 #     temperature=0,
 #     max_tokens=None,
 #     timeout=None,
 #     max_retries=2,
-    
 # )
 
 
-# image_file_path = Path("C:/Users/Dell/Desktop/ocr_rag_system/data/raw/Receipt_1.png")
 
+# txt = Path(r"C:\Users\Dell\Desktop\ocr_rag_system\data\processed\Receipt_1.txt")
+# content = txt.read_text(encoding="utf-8")
+# # print(content)
 
-# # Example using a local image file encoded in base64
-
-
-# with open(image_file_path, "rb") as image_file:
-#     encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
-
-# message_local = HumanMessage(
-#     content=[
-#         {"type": "text", "text": "Describe the local image."},
-#         {"type": "image_url", "image_url": f"data:image/png;base64,{encoded_image}"},
-#     ]
+# template = ChatPromptTemplate.from_messages([
+#     ('system',"You are a helpful accountant. Output only valid JSON. Do not add any extra text or commentary."
+# ),
+#     ('human',"convert this {context} into a meaningful json format")
+# ]
 # )
-# result_local = llm.invoke([message_local])
-# print(f"Response for local image: {result_local.content}")
+
+# # prompt = template.invoke({'context':content})
+# chain =  template | llm
+
+# result = chain.invoke({'context':content})
+# # print(result.content)
+
+# output =result.content
+# # Try to validate JSON (optional)
+# # Remove anything before first { and after last } (basic cleanup)
+# match = re.search(r"\{.*\}", output, re.DOTALL)
+# if match:
+#     clean_output = match.group(0)
+#     try:
+#         json_data = json.loads(clean_output)
+#         with open("output.json", "w", encoding="utf-8") as f:
+#             json.dump(json_data, f, indent=4, ensure_ascii=False)
+#         print("✅ Clean JSON saved to output.json")
+#     except json.JSONDecodeError:
+#         # fallback if still invalid
+#         with open("output.json", "w", encoding="utf-8") as f:
+#             f.write(clean_output)
+#         print("⚠️ JSON partially cleaned, saved raw to output.json")
+# else:
+#     # If no braces found, save raw
+#     with open("output.json", "w", encoding="utf-8") as f:
+#         f.write(output)
+#     print("⚠️ No JSON structure detected, saved raw output")
 
 
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.messages import HumanMessage
-from langchain_core.output_parsers import StructuredOutputParser, ResponseSchema
-import base64
 from pathlib import Path
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.prompts import ChatPromptTemplate
+import re
 import json
+import sys
+from pathlib import Path
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
-import os
-
-# Load environment variables
 load_dotenv()
-api_key = os.getenv("API_KEY")
 
-# Initialize Gemini Chat model
+# Add project root to Python path
+BASE_DIR = Path(__file__).resolve().parents[3]  # go up 3 levels
+sys.path.append(str(BASE_DIR))
+
+from app.infrastructure.ocr.tesseract_service import extract_text_from_image
+
+# Initialize Gemini model
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0,
@@ -64,54 +91,39 @@ llm = ChatGoogleGenerativeAI(
     max_retries=2,
 )
 
-# Encode image as base64
-image_file_path = Path("C:/Users/Dell/Desktop/ocr_rag_system/data/raw/Receipt_1.png")
-with open(image_file_path, "rb") as image_file:
-    encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+# Path to your image
+image_path = Path(r"C:\Users\Dell\Desktop\ocr_rag_system\data\raw\Receipt_1.png")
 
-# Define JSON schema you want from the model
-response_schemas = [
-    ResponseSchema(name="date", description="The date of the receipt or invoice"),
-    ResponseSchema(name="total_amount", description="Total amount in the receipt"),
-    ResponseSchema(name="vendor_name", description="Vendor or store name"),
-    ResponseSchema(name="items", description="List of items with name and price")
-]
+# Get text directly from OCR (no txt file saved)
+ocr_text = extract_text_from_image(image_path)
 
-output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
-format_instructions = output_parser.get_format_instructions()
+# Build prompt
+template = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful accountant. Output only valid JSON. Do not add any extra text or commentary."),
+    ("human", "Convert this {context} into a meaningful JSON format.")
+])
 
-# Build prompt with proper format instructions
-prompt = f"""
-Analyze this receipt image and extract the following information:
+# Run the chain
+chain = template | llm
+result = chain.invoke({'context': ocr_text})
 
-- date: The date of the receipt or invoice
-- total_amount: Total amount in the receipt  
-- vendor_name: Vendor or store name
-- items: List of items with name and price
-
-Return the data in JSON format.
-
-Format instructions:
-{format_instructions}
-"""
-
-# Create message with image
-message_local = HumanMessage(
-    content=[
-        {"type": "text", "text": prompt},
-        {"type": "image_url", "image_url": f"data:image/png;base64,{encoded_image}"},
-    ]
-)
-
-# Invoke Gemini
-response = llm.invoke([message_local])
-
-# Parse JSON output
-try:
-    parsed = output_parser.parse(response.content)
-    print("✅ Successfully parsed structured data:")
-    print(json.dumps(parsed, indent=4))
-except Exception as e:
-    print("❌ Failed to parse JSON:")
-    print(f"Error: {e}")
-    print(f"Raw output: {response.content}")
+# Save the JSON output
+output = result.content
+match = re.search(r"\{.*\}", output, re.DOTALL)
+if match:
+    clean_output = match.group(0)
+    try:
+        json_data = json.loads(clean_output)
+        with open("output.json", "w", encoding="utf-8") as f:
+            json.dump(json_data, f, indent=4, ensure_ascii=False)
+        print("✅ Clean JSON saved to output.json")
+    except json.JSONDecodeError:
+        # fallback if still invalid
+        with open("output.json", "w", encoding="utf-8") as f:
+            f.write(clean_output)
+        print("⚠️ JSON partially cleaned, saved raw to output.json")
+else:
+    # If no braces found, save raw
+    with open("output.json", "w", encoding="utf-8") as f:
+        f.write(output)
+    print("⚠️ No JSON structure detected, saved raw output")
